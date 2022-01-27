@@ -5,10 +5,13 @@ import CustomerListToolbar from '../components/customer/customer-list-toolbar';
 import { DashboardLayout } from '../components/dashboard-layout';
 import { customers } from '../__mocks__/customers';
 import {useState} from "react";
+import { SettingsPassword } from '../components/settings/settings-password';
 
-function Customers() {
+function Customers(...props) {
     const [limit, setlimit] = useState(5);
     const [page, setpage] = useState(0);
+    const [sort, setsort] = useState('created');
+    const [order, setorder] = useState(0);
     const [path, setpath] = useState('all');
 
     return (
@@ -26,9 +29,9 @@ function Customers() {
                 }}
             >
                 <Container maxWidth={false}>
-                    <CustomerListToolbar setpath={setpath} path={path} />
+                    <CustomerListToolbar setpath={setpath} path={path} setorder={setorder} order={order} sort={sort} setsort={setsort} />
                     <Box sx={{ mt: 3 }}>
-                        <CustomerListResults setpath={setpath} path={path} setpage={setpage} setlimit={setlimit} page={page} limit={limit} />
+                        <CustomerListResults setpath={setpath} path={path} setpage={setpage} setlimit={setlimit} page={page} limit={limit} setorder={setorder} order={order} sort={sort} setsort={setsort}  />
                     </Box>
                 </Container>
             </Box>

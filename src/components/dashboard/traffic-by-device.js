@@ -6,20 +6,38 @@ import TabletIcon from '@mui/icons-material/Tablet';
 import AndroidIcon from '@mui/icons-material/Android';
 import AppleIcon from '@mui/icons-material/Apple';
 import {useGetSales, useGetUsers} from "/src/service/service";
+import CircularProgress from '@mui/material/CircularProgress';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+
 
 export function TrafficByDevice({...props}) {
   const theme = useTheme();
   const { data, error } = useGetSales( "metadata/");
-  if (error) return(
-      <>
-        <h1>Something went wrong</h1>
-      </>
+  
+  if (!data || error) return(
+      <Card sx={{ height:'100%'}} {...props}>
+        <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            minHeight="100%"
+        >
+          {!data ? <CircularProgress /> : <ErrorOutlineIcon style={{color:'gray', fontSize:'50px'}}/>}
+        </Box>
+      </Card>
   );
 
   if (!data) return(
-      <>
-        <h1>Loading...</h1>
-      </>
+      <Card sx={{ height:'100%'}} {...props}>
+        <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            minHeight="100%"
+        >
+          <CircularProgress />
+        </Box>
+      </Card>
   );
 
   const {device_sales} = data;

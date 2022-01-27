@@ -6,28 +6,79 @@ import {
   TextField,
   InputAdornment,
   SvgIcon,
-  Typography
+  Typography,
+    Grid,
+    Select,
+    MenuItem,
+    FormControl,
+    InputLabel,
+    FormHelperText,
+    FormControlLabel,
+    Checkbox,
+
 } from '@mui/material';
 import { Download as DownloadIcon } from '../../icons/download';
 import { Search as SearchIcon } from '../../icons/search';
 import { Upload as UploadIcon } from '../../icons/upload';
-import {useRef} from "react";
+import {useRef, useState} from "react";
+import { useRouter } from 'next/router'
 
-export function ProductListToolbar({...props}) {
+export function ProductListToolbar(props) {
+    const {path, setpath, order, setorder, sort, setsort, status, setstatus, ...rest} = props;
+
     const ref = useRef(null);
+    const [select, setSelect] = useState(0);
+    const router = useRouter();
 
     function handleChange(event) {
         const value = event.target.value;
         if (value.length > 0) {
-            props.setpath("search/" + value);
+            setpath("search/" + value);
         } else {
-            props.setpath("all");
+            setpath("all");
         }
-        console.log(props);
+    }
+
+    function handleChangeStatus(event) {
+        setstatus(event.target.value);
+        // props.setpath("status/" + event.target.value);
+    }
+
+    function handleChangeSort(event) {
+        const value = event.target.value;
+        setSelect(value);
+        if(value === 0) {
+            setsort('movie.updated');
+            setorder(0);
+        }
+        else if(value === 1) {
+            setsort('movie.updated');
+            setorder(1);
+        }
+        else if(value === 2) {
+            setsort('movie.year');
+            setorder(0);
+        }
+        else if(value === 3) {
+            setsort('movie.year');
+            setorder(1);
+        }
+        else if(value === 4) {
+            setsort('movie.title');
+            setorder(0);
+        }
+        else if(value === 5) {
+            setsort('movie.title');
+            setorder(1);
+        }
+        else {
+            setsort('id');
+            setorder(0);
+        }
     }
 
     return (
-        <Box {...props}>
+        <Box {...rest}>
             <Box
                 sx={{
                     alignItems: 'center',
@@ -59,35 +110,81 @@ export function ProductListToolbar({...props}) {
                     <Button
                         color="primary"
                         variant="contained"
+                        onClick={() => router.push(`/product/add`)}
+
                     >
                         Add Product
                     </Button>
                 </Box>
             </Box>
-            <Box sx={{ mt: 3 }}>
+            <Box sx={{ mt: 3}}>
                 <Card>
                     <CardContent>
-                        <Box sx={{ maxWidth: 500 }}>
-                            <TextField
-                                ref={ref}
-                                fullWidth
-                                InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position="start">
-                                            <SvgIcon
-                                                color="action"
-                                                fontSize="small"
-                                            >
-                                                <SearchIcon />
-                                            </SvgIcon>
-                                        </InputAdornment>
-                                    )
-                                }}
-                                onChange={handleChange}
-                                placeholder="Search Products"
-                                variant="outlined"
-                            />
-                        </Box>
+                        <Grid container spacing={2}>
+                            <Grid item xs={5}>
+                                <Box sx={{ maxWidth: 500}}>
+                                    <TextField
+                                        ref={ref}
+                                        fullWidth
+                                        InputProps={{
+                                            startAdornment: (
+                                                <InputAdornment position="start">
+                                                    <SvgIcon
+                                                        color="action"
+                                                        fontSize="small"
+                                                    >
+                                                        <SearchIcon />
+                                                    </SvgIcon>
+                                                </InputAdornment>
+                                            )
+                                        }}
+                                        onChange={handleChange}
+                                        placeholder="Search Products"
+                                        variant="outlined"
+                                    />
+
+                                </Box>
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Box sx={{ minWidth: 120 }}>
+                                    <FormControl fullWidth>
+                                        <InputLabel id="select-label">Sort</InputLabel>
+                                        <Select
+                                            id="sort-select"
+                                            value={select}
+                                            label="Sort"
+                                            onChange={handleChangeSort}
+                                        >
+                                            <MenuItem value={0}>Last Update (oldest first)</MenuItem>
+                                            <MenuItem value={1}>Last Update (newest first)</MenuItem>
+                                            <MenuItem value={2}>Year (oldest first)</MenuItem>
+                                            <MenuItem value={3}>Year (newest first)</MenuItem>
+                                            <MenuItem value={4}>Title (A-Z)</MenuItem>
+                                            <MenuItem value={5}>Title (Z-A)</MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                </Box>
+                            </Grid>
+                            <Grid item xs={3}>
+                                <Box sx={{ minWidth: 120 }}>
+                                    <FormControl fullWidth>
+                                        <InputLabel id="status-label">Status</InputLabel>
+                                        <Select
+                                            id="status-select"
+                                            value={props.status}
+                                            label="Status"
+                                            onChange={handleChangeStatus}
+                                        >
+                                            <MenuItem value={'all'}>All</MenuItem>
+                                            <MenuItem value={'in stock'}>In Stock</MenuItem>
+                                            <MenuItem value={'limited'}>Limited </MenuItem>
+                                            <MenuItem value={'out of stock'}>Out of Stock</MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                </Box>
+                            </Grid>
+                        </Grid>
+
                     </CardContent>
                 </Card>
             </Box>

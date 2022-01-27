@@ -1,19 +1,23 @@
-import { Avatar, Card, CardContent, Grid, Typography } from '@mui/material';
+import { Avatar, Card, CardContent, Grid, Typography, Box } from '@mui/material';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import {useGetSales, useGetUsers} from "/src/service/service";
+import CircularProgress from '@mui/material/CircularProgress';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 export function TotalProfit({...props}) {
     const { data, error } = useGetSales( "metadata/");
-    if (error) return(
-      <>
-        <h1>Something went wrong</h1>
-      </>
-    );
 
-    if (!data) return(
-      <>
-        <h1>Loading...</h1>
-      </>
+    if (!data || error) return(
+        <Card sx={{ height:'100%'}} {...props}>
+            <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                minHeight="100%"
+            >
+                {!data ? <CircularProgress /> : <ErrorOutlineIcon style={{color:'gray', fontSize:'50px'}}/>}
+            </Box>
+        </Card>
     );
 
     function formatMoney(num) {

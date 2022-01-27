@@ -17,14 +17,14 @@ import {
     Checkbox,
 
 } from '@mui/material';
+import { Download as DownloadIcon } from '../../icons/download';
 import { Search as SearchIcon } from '../../icons/search';
 import { Upload as UploadIcon } from '../../icons/upload';
-import { Download as DownloadIcon } from '../../icons/download';
-import {useRef, useState} from 'react';
-import Customers from "../../pages/customers";
+import {useRef, useState} from "react";
 
-export default function CustomerListToolbar(props) {
-    const {path, setpath, order, setorder, sort, setsort, ...rest} = props;
+export default function ReviewListToolbar(props) {
+    const {path, setpath, order, setorder, sort, setsort, status, setstatus, ...rest} = props;
+
     const ref = useRef(null);
     const [select, setSelect] = useState(0);
 
@@ -33,8 +33,14 @@ export default function CustomerListToolbar(props) {
         if (value.length > 0) {
             setpath("search/" + value);
         } else {
-            setpath("all");
+            ("all");
         }
+        //setpage(0);
+    }
+
+    function handleChangeStatus(event) {
+        setstatus(event.target.value);
+       // props.setpath("status/" + event.target.value);
     }
 
     function handleChangeSort(event) {
@@ -49,19 +55,11 @@ export default function CustomerListToolbar(props) {
             setorder(1);
         }
         else if(value === 2) {
-            setsort('firstName');
+            setsort('rating');
             setorder(0);
         }
         else if(value === 3) {
-            setsort('firstName');
-            setorder(1);
-        }
-        else if(value === 4) {
-            setsort('lastName');
-            setorder(0);
-        }
-        else if(value === 5) {
-            setsort('lastName');
+            setsort('rating');
             setorder(1);
         }
         else {
@@ -71,7 +69,7 @@ export default function CustomerListToolbar(props) {
     }
 
     return (
-        <Box {...rest}>
+        <Box {...props}>
             <Box
                 sx={{
                     alignItems: 'center',
@@ -85,7 +83,7 @@ export default function CustomerListToolbar(props) {
                     sx={{ m: 1 }}
                     variant="h4"
                 >
-                    Customers
+                    Reviews
                 </Typography>
                 <Box sx={{ m: 1 }}>
                     <Button
@@ -104,7 +102,7 @@ export default function CustomerListToolbar(props) {
                         color="primary"
                         variant="contained"
                     >
-                        Add Customer
+                        Add Review
                     </Button>
                 </Box>
             </Box>
@@ -130,7 +128,7 @@ export default function CustomerListToolbar(props) {
                                             )
                                         }}
                                         onChange={handleChange}
-                                        placeholder="Search Users"
+                                        placeholder="Search Reviews"
                                         variant="outlined"
                                     />
 
@@ -148,10 +146,8 @@ export default function CustomerListToolbar(props) {
                                         >
                                             <MenuItem value={0}>Created Date (oldest first)</MenuItem>
                                             <MenuItem value={1}>Created Date (newest first)</MenuItem>
-                                            <MenuItem value={2}>First Name (A-Z)</MenuItem>
-                                            <MenuItem value={3}>Last Name (Z-A)</MenuItem>
-                                            <MenuItem value={4}>First Name (A-Z)</MenuItem>
-                                            <MenuItem value={5}>Last Name (Z-A)</MenuItem>
+                                            <MenuItem value={2}>Rating (lowest first)</MenuItem>
+                                            <MenuItem value={3}>Rating (highest first)</MenuItem>
                                         </Select>
                                     </FormControl>
                                 </Box>

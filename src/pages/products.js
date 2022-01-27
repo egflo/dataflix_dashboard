@@ -10,7 +10,10 @@ import {useState} from "react";
 function Products() {
     const [limit, setlimit] = useState(5);
     const [page, setpage] = useState(0);
+    const [sort, setsort] = useState('movie.id');
+    const [order, setorder] = useState(0);
     const [path, setpath] = useState('all');
+    const [status, setstatus] = useState('all');
 
     return (
         <>
@@ -27,9 +30,9 @@ function Products() {
                 }}
             >
                 <Container maxWidth={false}>
-                    <ProductListToolbar setpath={setpath} path={path} />
+                    <ProductListToolbar setpath={setpath} path={path} setorder={setorder} order={order} sort={sort} setsort={setsort} status={status} setstatus={setstatus}/>
                     <Box sx={{ mt: 3 }}>
-                        <ProductListResults setpath={setpath} path={path} setpage={setpage} setlimit={setlimit} page={page} limit={limit} />
+                        <ProductListResults setpath={setpath} path={path} setpage={setpage} setlimit={setlimit} page={page} limit={limit} setorder={setorder} order={order} sort={sort} setsort={setsort} status={status} setstatus={setstatus}/>
                     </Box>
                 </Container>
             </Box>

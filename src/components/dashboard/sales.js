@@ -4,6 +4,8 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import {useGetSales, useGetUsers} from "/src/service/service";
 import {useState} from 'react';
+import CircularProgress from '@mui/material/CircularProgress';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 const show = [
   {
@@ -27,16 +29,17 @@ export function Sales(...props) {
   const theme = useTheme();
   const { data, error } = useGetSales( "metadata/?days=" + days );
 
-  if (error) return(
-      <>
-        <h1>Something went wrong</h1>
-      </>
-  );
-
-  if (!data) return(
-      <>
-        <h1>Loading...</h1>
-      </>
+  if (!data || error) return(
+      <Card sx={{ height:'100%'}} {...props}>
+        <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            minHeight="100%"
+        >
+          {!data ? <CircularProgress /> : <ErrorOutlineIcon style={{color:'gray', fontSize:'50px'}}/>}
+        </Box>
+      </Card>
   );
 
   const open = Boolean(anchorEl);

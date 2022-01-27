@@ -14,40 +14,50 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-  Typography
+  Typography,
+    Button,
+    Grid,
+    Divider,
 } from '@mui/material';
 import { getInitials } from '../../utils/get-initials';
 import {DashboardLayout} from "../dashboard-layout";
+import CircularProgress from '@mui/material/CircularProgress';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import { useRouter } from 'next/router'
 
-export const CustomerListResults = ({...rest }) => {
-  const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
-  const { data, error } = useGetUsers( rest.path + "?limit=" + rest.limit + "&page=" + rest.page);
 
-  if (error) return(
-      <>
-          <h1>Something went wrong</h1>
-      </>
-  );
+export const CustomerListResults = (props) => {
+  const {path, setpath, order, setorder, sort, setsort, page, setpage, limit, setlimit, ...rest} = props;
 
-  if (!data) return(
-      <>
-          <h1>Loading...</h1>
-      </>
+  const router = useRouter();
+  const [selectedIds, setSelectedIds] = useState([]);
+  const { data, error } = useGetUsers(path + "?limit=" + limit + "&page=" + page + "&sortBy=" + sort + "&orderBy=" + order);
+
+  if (!data || error) return(
+      <Card sx={{ height:'100%'}}{...rest}>
+        <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            minHeight="100%"
+            height="400px"
+        >
+          {!data ? <CircularProgress /> : <ErrorOutlineIcon style={{color:'gray', fontSize:'50px'}}/>}
+        </Box>
+      </Card>
   );
 
   const {content, size, empty, totalPages, totalElements, last} = data;
-  const customers = content;
 
   const handleSelectAll = (event) => {
-    let newSelectedCustomerIds;
+    let newSelectedIds;
 
     if (event.target.checked) {
-      newSelectedCustomerIds = customers.map((customer) => customer.id);
+      newSelectedIds = content.map((content) => content.id);
     } else {
-      newSelectedCustomerIds = [];
+      newSelectedIds = [];
     }
-
-    setSelectedCustomerIds(newSelectedCustomerIds);
+    setSelectedIds(newSelectedIds);
   };
 
   function formatAddress(customer) {
@@ -62,36 +72,40 @@ export const CustomerListResults = ({...rest }) => {
   }
   function formatDate(customer) {
     const moment = require('moment'); // require
-    const d = new Date(customer.createdDate);
+    const d = new Date(customer.created);
     return moment(d).format('YYYY-MM-DD');
   }
 
   const handleSelectOne = (event, id) => {
-    const selectedIndex = selectedCustomerIds.indexOf(id);
-    let newSelectedCustomerIds = [];
+    const selectedIndex = selectedIds.indexOf(id);
+    let newSelectedIds = [];
 
     if (selectedIndex === -1) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(selectedCustomerIds, id);
+      newSelectedIds = newSelectedIds.concat(selectedIds, id);
     } else if (selectedIndex === 0) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(selectedCustomerIds.slice(1));
-    } else if (selectedIndex === selectedCustomerIds.length - 1) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(selectedCustomerIds.slice(0, -1));
+      newSelectedIds = newSelectedIds.concat(selectedIds.slice(1));
+    } else if (selectedIndex === selectedIds.length - 1) {
+      newSelectedIds = newSelectedIds.concat(selectedIds.slice(0, -1));
     } else if (selectedIndex > 0) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(
-        selectedCustomerIds.slice(0, selectedIndex),
-        selectedCustomerIds.slice(selectedIndex + 1)
+      newSelectedIds = newSelectedIds.concat(
+        selectedIds.slice(0, selectedIndex),
+          selectedIds.slice(selectedIndex + 1)
       );
     }
 
-    setSelectedCustomerIds(newSelectedCustomerIds);
+    setSelectedIds(newSelectedIds);
   };
 
   const handleLimitChange = (event) => {
-    rest.setlimit(event.target.value);
+    setlimit(event.target.value);
   };
 
   const handlePageChange = (event, newPage) => {
-    rest.setpage(newPage);
+    setpage(newPage);
+  };
+
+  const handleDelete = () => {
+    console.log(selectedIds);
   };
 
   return (
@@ -103,11 +117,11 @@ export const CustomerListResults = ({...rest }) => {
               <TableRow>
                 <TableCell padding="checkbox">
                   <Checkbox
-                    checked={selectedCustomerIds.length === customers.length}
+                    checked={selectedIds.length === content.length}
                     color="primary"
                     indeterminate={
-                      selectedCustomerIds.length > 0
-                      && selectedCustomerIds.length < customers.length
+                        selectedIds.length > 0
+                      && selectedIds.length < content.length
                     }
                     onChange={handleSelectAll}
                   />
@@ -127,18 +141,20 @@ export const CustomerListResults = ({...rest }) => {
                 <TableCell>
                   Registration date
                 </TableCell>
+                <TableCell>
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {customers.map((customer) => (
+              {content.map((customer) => (
                 <TableRow
                   hover
                   key={customer.id}
-                  selected={selectedCustomerIds.indexOf(customer.id) !== -1}
+                  selected={selectedIds.indexOf(customer.id) !== -1}
                 >
                   <TableCell padding="checkbox">
                     <Checkbox
-                      checked={selectedCustomerIds.indexOf(customer.id) !== -1}
+                      checked={selectedIds.indexOf(customer.id) !== -1}
                       onChange={(event) => handleSelectOne(event, customer.id)}
                       value="true"
                     />
@@ -176,21 +192,67 @@ export const CustomerListResults = ({...rest }) => {
                   <TableCell>
                     {formatDate(customer)}
                   </TableCell>
+                  <TableCell>
+                    <Button
+                        color="primary"
+                        variant="contained"
+                        onClick={() => router.push(`/customer/${customer.id}`)}
+                    >
+                      Edit
+                    </Button>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </Box>
       </PerfectScrollbar>
-      <TablePagination
-        component="div"
-        count={totalElements}
-        onPageChange={handlePageChange}
-        onRowsPerPageChange={handleLimitChange}
-        page={rest.page}
-        rowsPerPage={rest.limit}
-        rowsPerPageOptions={[5, 10, 25]}
-      />
+      <Divider />
+      <Grid
+        container
+        spacing={0}
+        sx={{
+          justifyContent: 'flex-end',
+          mt: 0
+        }}
+
+      >
+        <Grid
+            item
+            md={3}
+            xs={3}
+            sx={{
+              display: 'flex',
+              justifyContent: 'flex-start',
+              padding: '5px',
+            }}
+        >
+            <Button
+                color="secondary"
+                variant="contained"
+                onClick={handleDelete}
+            >
+              Delete Selected
+            </Button>
+        </Grid>
+
+        <Grid
+            item
+            md={9}
+            xs={6}
+            >
+
+          <TablePagination
+              component="div"
+              count={totalElements}
+              onPageChange={handlePageChange}
+              onRowsPerPageChange={handleLimitChange}
+              page={page}
+              rowsPerPage={limit}
+              rowsPerPageOptions={[5, 10, 25]}
+          />
+        </Grid>
+      </Grid>
     </Card>
   );
 };

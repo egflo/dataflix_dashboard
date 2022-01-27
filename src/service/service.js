@@ -1,13 +1,14 @@
 import React from 'react'
 import axios from "axios";
 import useSWR, { useSWRConfig } from 'swr'
+import { useRouter } from 'next/router'
 
 //+ localStorage.getItem("token")
 //const baseUrl = "https://dataflixapi.azurewebsites.net"
-const baseUrl = "http://localhost:8080"
+const baseUrl = process.env.ENV_VARIABLE === "production" ? "https://dataflixapi.azurewebsites.net" : "http://localhost:8080"
 const fetcher = (url) =>
     axios
-        .get(baseUrl + url, { headers: { Authorization: "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI4NCxhZG1pbkBleGFtcGxlLmNvbSIsImlzcyI6ImRhdGFmbGl4LmlvIiwiaWF0IjoxNjM5ODA4MTM1LCJleHAiOjE2NDA0MTI5MzV9.wapxqXx3Umm5r76pT0mw6k9fq0PgnJNElHFk22DIdRhx19tfAnJjJ5uNUDqRPgygHZeETCQI4FHANCNH_jjy5g" } })
+        .get(baseUrl + url, { headers: { Authorization: "Bearer " + localStorage.getItem("token")} })
         .then((res) => res.data)
         .catch((error) => {
 
@@ -20,7 +21,7 @@ const fetcher = (url) =>
                 // console.log(error.response.data);
                 // console.log(error.response.status);
                 // console.log(error.response.headers);
-                status.info = error.response.data;
+                status.info = status.info;
                 status.status = error.response.status;
 
             } else if (error.request) {
@@ -41,13 +42,20 @@ const fetcher = (url) =>
 
 const options = { revalidateAll: true,}
 
-export const useGetUsers = (path) => {
-
-    const url = "/customer/" + path
+const useService = (url, options) => {
+    const router = useRouter()
     const { data, error } = useSWR(url, fetcher, {
         onErrorRetry: (error, key, config, revalidate, { retryCount }) => {
             // Never retry on 404.
             if (error.status === 404) return
+
+            if (error.status === 401) {
+                // If we get a 401, we should retry.
+                // This is a workaround for a bug in SWR that prevents
+                // the revalidation from happening.
+                //
+                router.push("/login");
+            }
 
             // Never retry for a specific key.
             if (key === url) return
@@ -58,27 +66,31 @@ export const useGetUsers = (path) => {
             // Retry after 5 seconds.
             setTimeout(() => revalidate({ retryCount }), 5000)
         }})
+    return {data, error}
+}
+
+export const useGetUsers = (path) => {
+    const url = "/customer/" + path;
+
+    const { data, error } = useService(url, options);
 
     return {data, error}
 }
 
+
+
+export const useGetAddress = (path) => {
+    const url = "/address/" + path
+    
+    const { data, error } = useService(url, options);
+    
+    return {data, error}
+}
+
 export const useGetUser = () => {
-
     const url = "/customer/"
-    const { data, error } = useSWR(url, fetcher, {
-        onErrorRetry: (error, key, config, revalidate, { retryCount }) => {
-            // Never retry on 404.
-            if (error.status === 404) return
-
-            // Never retry for a specific key.
-            if (key === url) return
-
-            // Only retry up to 10 times.
-            if (retryCount >= 10) return
-
-            // Retry after 5 seconds.
-            setTimeout(() => revalidate({ retryCount }), 5000)
-        }})
+    
+    const { data, error } = useService(url, options);
 
     return {data, error}
 }
@@ -87,20 +99,8 @@ export const useGetUser = () => {
 export const useGetMovies = (path) => {
 
     const url = "/movie/" + path
-    const { data, error } = useSWR(url, fetcher, {
-        onErrorRetry: (error, key, config, revalidate, { retryCount }) => {
-            // Never retry on 404.
-            if (error.status === 404) return
-
-            // Never retry for a specific key.
-            if (key === url) return
-
-            // Only retry up to 10 times.
-            if (retryCount >= 10) return
-
-            // Retry after 5 seconds.
-            setTimeout(() => revalidate({ retryCount }), 5000)
-        }})
+    
+    const { data, error } = useService(url, options);
 
     return {data, error}
 }
@@ -108,21 +108,51 @@ export const useGetMovies = (path) => {
 export const useGetSales = (path) => {
 
     const url = "/sale/" + path
-    console.log(url)
-    const { data, error } = useSWR(url, fetcher, {
-        onErrorRetry: (error, key, config, revalidate, { retryCount }) => {
-            // Never retry on 404.
-            if (error.status === 404) return
 
-            // Never retry for a specific key.
-            if (key === url) return
+    const { data, error } = useService(url, options);
 
-            // Only retry up to 10 times.
-            if (retryCount >= 10) return
+    return {data, error}
+}
 
-            // Retry after 5 seconds.
-            setTimeout(() => revalidate({ retryCount }), 5000)
-        }})
+
+export const useGetInventory = (path) => {
+
+    const url = "/inventory/" + path
+
+    const { data, error } = useService(url, options);
+    
+    return {data, error}
+}
+
+
+export const useGetCast = (path) => {
+    const url = "/cast/" + path
+    
+    const { data, error } = useService(url, options);
+    
+    return {data, error}
+}
+
+export const useGetGenre = (path) => {
+    const url = "/genre/" + path
+    
+    const { data, error } = useService(url, options);
+    
+    return {data, error}
+}
+
+export const useGetCustomer = (path) => {
+    const url = "/customer/" + path
+    
+    const { data, error } = useService(url, options);
+
+    return {data, error}
+}
+
+export const useGetReviews = (path) => {
+    const url = "/review/" + path
+
+    const { data, error } = useService(url, options);
 
     return {data, error}
 }

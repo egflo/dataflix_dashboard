@@ -2,6 +2,8 @@ import { Avatar, Box, Card, CardContent, Grid, Typography } from '@mui/material'
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import MoneyIcon from '@mui/icons-material/Money';
 import {useGetSales, useGetUsers} from "/src/service/service";
+import CircularProgress from '@mui/material/CircularProgress';
+
 
 export function Budget({...props}) {
   const { data, error } = useGetSales( "metadata/");
@@ -12,9 +14,16 @@ export function Budget({...props}) {
   );
 
   if (!data) return(
-      <>
-        <h1>Loading...</h1>
-      </>
+      <Card sx={{ height:'100%'}} {...props}>
+          <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              minHeight="100%"
+          >
+              <CircularProgress />
+          </Box>
+      </Card>
   );
 
   const {total_sales,total_transactions} = data;
@@ -23,6 +32,7 @@ export function Budget({...props}) {
       <Card
           sx={{ height: '100%' }}
           {...props}
+
       >
         <CardContent>
           <Grid

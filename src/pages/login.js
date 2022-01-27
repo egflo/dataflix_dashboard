@@ -7,13 +7,15 @@ import { Box, Button, Container, Grid, Link, TextField, Typography } from '@mui/
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Facebook as FacebookIcon } from '../icons/facebook';
 import { Google as GoogleIcon } from '../icons/google';
+import {useEffect, useState} from 'react';
 
-const Login = () => {
+function Login() {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
   const formik = useFormik({
     initialValues: {
-      email: 'demo@devias.io',
-      password: 'Password123'
+      email: 'admin@example.com',
+      password: 'aa'
     },
     validationSchema: Yup.object({
       email: Yup
@@ -30,9 +32,54 @@ const Login = () => {
           'Password is required')
     }),
     onSubmit: () => {
-      router.push('/');
+      setLoading(true);
     }
   });
+
+  useEffect(() => {
+    // POST request using fetch with error handling
+    const url = 'http://localhost:8080/user/auth'
+
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: formik.values.email, password: formik.values.password })
+    };
+    fetch(url, requestOptions)
+        .then(async response => {
+          const isJson = response.headers.get('content-type')?.includes('application/json');
+          const data = isJson && await response.json();
+
+          // check for error response
+          if (!response.ok) {
+            // get error message from body or default to response status
+            const error = (data && data.message) || response.status;
+            return Promise.reject(error);
+          }
+
+          // return parsed json if response is successful
+          const id = data.id;
+          const token = data.token;
+          const username = data.username;
+          const roles = data.roles;
+
+          localStorage.setItem('id', id);
+          localStorage.setItem('token', token);
+          localStorage.setItem('username', username);
+          localStorage.setItem('roles', roles);
+          
+          setLoading(false);
+          router.push('/');
+
+        })
+        .catch(error => {
+          //this.setState({ errorMessage: error.toString() });
+          console.error('There was an error!', error);
+          setLoading(false);
+        });
+// empty dependency array means this effect will only run once (like componentDidMount in classes)
+  }, [loading]);
+
 
   return (
     <>
@@ -49,24 +96,13 @@ const Login = () => {
         }}
       >
         <Container maxWidth="sm">
-          <NextLink
-            href="/"
-            passHref
-          >
-            <Button
-              component="a"
-              startIcon={<ArrowBackIcon fontSize="small" />}
-            >
-              Dashboard
-            </Button>
-          </NextLink>
           <form onSubmit={formik.handleSubmit}>
             <Box sx={{ my: 3 }}>
               <Typography
                 color="textPrimary"
                 variant="h4"
               >
-                Sign in
+               Sign in
               </Typography>
               <Typography
                 color="textSecondary"
@@ -74,57 +110,6 @@ const Login = () => {
                 variant="body2"
               >
                 Sign in on the internal platform
-              </Typography>
-            </Box>
-            <Grid
-              container
-              spacing={3}
-            >
-              <Grid
-                item
-                xs={12}
-                md={6}
-              >
-                <Button
-                  color="info"
-                  fullWidth
-                  startIcon={<FacebookIcon />}
-                  onClick={formik.handleSubmit}
-                  size="large"
-                  variant="contained"
-                >
-                  Login with Facebook
-                </Button>
-              </Grid>
-              <Grid
-                item
-                xs={12}
-                md={6}
-              >
-                <Button
-                  fullWidth
-                  color="error"
-                  startIcon={<GoogleIcon />}
-                  onClick={formik.handleSubmit}
-                  size="large"
-                  variant="contained"
-                >
-                  Login with Google
-                </Button>
-              </Grid>
-            </Grid>
-            <Box
-              sx={{
-                pb: 1,
-                pt: 3
-              }}
-            >
-              <Typography
-                align="center"
-                color="textSecondary"
-                variant="body1"
-              >
-                or login with email address
               </Typography>
             </Box>
             <TextField
@@ -162,7 +147,7 @@ const Login = () => {
                 type="submit"
                 variant="contained"
               >
-                Sign In Now
+                {loading ? 'Loading...' : 'Sign in'}
               </Button>
             </Box>
             <Typography

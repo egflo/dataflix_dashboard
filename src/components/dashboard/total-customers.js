@@ -3,20 +3,23 @@ import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import PeopleIcon from '@mui/icons-material/PeopleOutlined';
 import {useGetUsers} from "../../service/service";
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import CircularProgress from '@mui/material/CircularProgress';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 export function TotalCustomers({...props}) {
     const { data, error } = useGetUsers("metadata");
 
-    if (error) return(
-        <>
-            <h1>Something went wrong</h1>
-        </>
-    );
-
-    if (!data) return(
-        <>
-            <h1>Loading...</h1>
-        </>
+    if (!data || error) return(
+        <Card sx={{ height:'100%'}} {...props}>
+            <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                minHeight="100%"
+            >
+                {!data ? <CircularProgress /> : <ErrorOutlineIcon style={{color:'gray', fontSize:'50px'}}/>}
+            </Box>
+        </Card>
     );
 
     const {total, previous, change} = data;

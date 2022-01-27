@@ -29,31 +29,18 @@ import {useGetUser} from '../../service/service';
 
 
 export const AccountProfileDetails = (props) => {
+  
+  const {id, firstName, lastName, email, createdDate} = props.user;
+
+
   const [values, setValues] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
+    firstName: firstName,
+    lastName: lastName,
+    email: email,
     state: 'California',
     country: 'USA'
   });
-
-  const { data, error } = useGetUser();
-
-  if (error) return(
-      <>
-        <h1>Something went wrong</h1>
-      </>
-  );
-
-  if (!data) return(
-      <>
-        <h1>Loading...</h1>
-      </>
-  );
-
-  const {id, firstName, lastName, email, createdDate} = data;
-
+  
 
   const handleChange = (event) => {
     setValues({
@@ -66,7 +53,6 @@ export const AccountProfileDetails = (props) => {
     <form
       autoComplete="off"
       noValidate
-      {...props}
     >
       <Card>
         <CardHeader
@@ -106,7 +92,7 @@ export const AccountProfileDetails = (props) => {
                 name="lastName"
                 onChange={handleChange}
                 required
-                value={lastName}
+                value={values.lastName}
                 variant="outlined"
               />
             </Grid>
@@ -125,21 +111,7 @@ export const AccountProfileDetails = (props) => {
                 variant="outlined"
               />
             </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
-                fullWidth
-                label="Phone Number"
-                name="phone"
-                onChange={handleChange}
-                type="number"
-                value={values.phone}
-                variant="outlined"
-              />
-            </Grid>
+
             <Grid
               item
               md={6}

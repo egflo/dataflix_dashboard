@@ -1,18 +1,17 @@
 import Head from 'next/head';
 import { Box, Container } from '@mui/material';
-import { OrderListResults } from '../components/order/order-list-results';
-import OrderListToolbar from '../components/order/order-list-toolbar';
+import { ReviewListResults } from '../components/review/review-list-results';
+import ReviewListResultsListToolbar from '../components/review/review-list-toolbar';
 import { DashboardLayout } from '../components/dashboard-layout';
 import { customers } from '../__mocks__/customers';
 import {useState} from "react";
 
-function Orders() {
+function Reviews() {
     const [limit, setlimit] = useState(5);
     const [page, setpage] = useState(0);
-    const [sort, setsort] = useState('saleDate');
+    const [sort, setsort] = useState('id');
     const [order, setorder] = useState(0);
     const [path, setpath] = useState('all');
-    const [status, setstatus] = useState('all');
 
     return (
         <>
@@ -29,9 +28,9 @@ function Orders() {
                 }}
             >
                 <Container maxWidth={false}>
-                    <OrderListToolbar setpath={setpath} path={path} setorder={setorder} order={order} sort={sort} setsort={setsort} status={status} setstatus={setstatus} />
+                    <ReviewListResultsListToolbar setpath={setpath} path={path} setorder={setorder} order={order} sort={sort} setsort={setsort}/>
                     <Box sx={{ mt: 3 }}>
-                        <OrderListResults setpath={setpath} path={path} setpage={setpage} setlimit={setlimit} page={page} limit={limit} setorder={setorder} order={order} sort={sort} setsort={setsort} status={status} setstatus={setstatus}/>
+                        <ReviewListResults setpath={setpath} path={path} setpage={setpage} setlimit={setlimit} page={page} limit={limit} setorder={setorder} order={order} sort={sort} setsort={setsort}/>
                     </Box>
                 </Container>
             </Box>
@@ -39,10 +38,10 @@ function Orders() {
     )
 }
 
-Orders.getLayout = (page) => (
+Reviews.getLayout = (page) => (
   <DashboardLayout>
     {page}
   </DashboardLayout>
 );
 
-export default Orders;
+export default Reviews;

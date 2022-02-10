@@ -30,12 +30,12 @@ const states = [
 ];
 
 const validationSchema = yup.object().shape({
-    firstName: yup.string()
+    firstname: yup.string()
         .required("First name is required"),
-    lastName: yup.string()
+    lastname: yup.string()
         .required("Last name is required"),
     unit: yup.string(),
-    address: yup.string()
+    street: yup.string()
         .min(5, "Too Short!")
         .required("Address is required"),
     city: yup.string()
@@ -51,9 +51,9 @@ export function AddressForm(props) {
     const [loading, setLoading] = useState(false);
     const [values, setValues] = useState({
         id: props.address.id || '',
-        firstName: props.address.firstName || '',
-        lastName: props.address.lastName || '',
-        address: props.address.address || '',
+        firstname: props.address.firstname|| '',
+        lastname: props.address.lastname || '',
+        street: props.address.street || '',
         unit: props.address.unit || '',
         city: props.address.city || '',
         state: props.address.state || '',
@@ -63,7 +63,7 @@ export function AddressForm(props) {
     useEffect(() => {
         // POST request using fetch with error handling
         if(loading) {
-            const url = 'http://localhost:8080/address/' + props.address.id;
+            const url = process.env.NEXT_PUBLIC_API_URL + '/address/' + props.address.id;
             const requestOptions = {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + localStorage.getItem('token') },
@@ -82,12 +82,20 @@ export function AddressForm(props) {
                     }
 
                     // return parsed json if response is successful
-                    console.log(data);
+                    props.setalert({
+                        open: true,
+                        message: 'Address updated successfully',
+                        severity: 'success',
+                    });
                     setLoading(false);
                 })
                 .catch(error => {
                     //this.setState({ errorMessage: error.toString() });
-                    console.error('There was an error!', error);
+                    props.setalert({
+                        open: true,
+                        message: error.toString(),
+                        severity: 'error'
+                    });
                     setLoading(false);
                 });
         }
@@ -112,7 +120,6 @@ export function AddressForm(props) {
             autoComplete="off"
             noValidate
             onSubmit={formik.handleSubmit}
-            {...props}
         >
             <Card>
                 <CardHeader
@@ -134,12 +141,12 @@ export function AddressForm(props) {
                                 fullWidth
                                 helperText="Please specify the first name"
                                 label="First name"
-                                name="firstName"
+                                name="firstname"
                                 type="text"
-                                value={formik.values.firstName}
+                                value={formik.values.firstname}
                                 onChange={formik.handleChange}
-                                error={formik.touched.firstName && Boolean(formik.errors.firstName)}
-                                helperText={formik.touched.firstName && formik.errors.firstName}
+                                error={formik.touched.firstname && Boolean(formik.errors.firstname)}
+                                helperText={formik.touched.firstname && formik.errors.firstname}
                             />
                         </Grid>
                         <Grid
@@ -151,12 +158,12 @@ export function AddressForm(props) {
                                 fullWidth
                                 helperText="Please specify the last name"
                                 label="Last name"
-                                name="lastName"
+                                name="lastname"
                                 type="text"
-                                value={formik.values.lastName}
+                                value={formik.values.lastname}
                                 onChange={formik.handleChange}
-                                error={formik.touched.lastName && Boolean(formik.errors.lastName)}
-                                helperText={formik.touched.lastName && formik.errors.lastName}
+                                error={formik.touched.lastname && Boolean(formik.errors.lastname)}
+                                helperText={formik.touched.lastname && formik.errors.lastname}
                             />
                         </Grid>
                         <Grid
@@ -183,14 +190,14 @@ export function AddressForm(props) {
                         >
                             <TextField
                                 fullWidth
-                                helperText="Please specify the address"
+                                helperText="Please specify the street name"
                                 label="Address"
-                                name="address"
+                                name="street"
                                 type="text"
-                                value={formik.values.address}
+                                value={formik.values.street}
                                 onChange={formik.handleChange}
-                                error={formik.touched.address && Boolean(formik.errors.address)}
-                                helperText={formik.touched.address && formik.errors.address}
+                                error={formik.touched.street && Boolean(formik.errors.street)}
+                                helperText={formik.touched.street && formik.errors.street}
                             />
                         </Grid>
                         <Grid

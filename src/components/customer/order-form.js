@@ -35,7 +35,7 @@ export function OrderForm(props) {
 
         if(loading) {
             // POST request using fetch with error handling
-            const url = 'http://localhost:8080/order/' + item.id;
+            const url = process.env.NEXT_PUBLIC_API_URL + '/order/' + item.id;
 
             const requestOptions = {
                 method: 'POST',

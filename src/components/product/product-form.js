@@ -166,7 +166,7 @@ export function ProductForm(props) {
         // POST request using fetch with error handling
         if(loading && movie !== null) {
             console.log(JSON.stringify(formatData(movie)));
-            const url = 'http://localhost:8080/movie/' + product.id;
+            const url = process.env.NEXT_PUBLIC_API_URL + '/movie/' + product.id;
             const requestOptions = {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + localStorage.getItem('token') },

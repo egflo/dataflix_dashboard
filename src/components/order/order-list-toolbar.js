@@ -101,8 +101,9 @@ export default function OrderListToolbar(props) {
                     <Button
                         color="primary"
                         variant="contained"
+                        disabled
                     >
-                        Add Product
+                        Add Order
                     </Button>
                 </Box>
             </Box>

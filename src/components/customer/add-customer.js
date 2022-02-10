@@ -33,9 +33,9 @@ const validationSchema = yup.object({
     email: yup
         .string('Enter your email')
         .required('Enter a valid email'),
-    created: yup
-        .date('Enter creation date')
-        .required('Enter a valid date'),
+    password: yup
+        .string('Enter your password')
+        .required('Enter a valid password'),
 });
 
 function formatDate(created) {
@@ -47,21 +47,20 @@ function formatDate(created) {
 export function CustomerForm(props) {
     const [loading, setLoading] = useState(false);
     const [values, setValues] = useState({
-        id: props.customer ? props.customer.id : null,
-        firstname: props.customer ? props.customer.firstname : '',
-        lastname:  props.customer ? props.customer.lastname : '',
-        email: props.customer ? props.customer.email : '',
-        created: props.customer ? formatDate(props.customer.created) : formatDate(new Date()),
-        primaryAddress: props.customer ? props.customer.primaryAddressId : null,
+        firstname: '',
+        lastname: '',
+        email: '',
+        password: '',
     });
 
     useEffect(() => {
         // POST request using fetch with error handling
         if(loading) {
-            //alert(JSON.stringify(values, null, 2));
+            alert(JSON.stringify(values, null, 2));
+            return
             const url = process.env.NEXT_PUBLIC_API_URL + '/customer/' + props.customer.id;
             const requestOptions = {
-                method: 'POST',
+                method: 'PUT',
                 headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + localStorage.getItem('token') },
                 body: JSON.stringify(values)
             };
@@ -113,14 +112,13 @@ export function CustomerForm(props) {
         },
         validationSchema: validationSchema,
         onSubmit: (values) => {
-            values.id = props.customer.id;
             setValues(
                 {
                     id: values.id,
                     firstname: values.firstname,
                     lastname: values.lastname,
                     email: values.email,
-                    created: values.created,
+                    password: values.password,
                 }
             );
             setLoading(true);
@@ -136,7 +134,7 @@ export function CustomerForm(props) {
             <Card>
                 <CardHeader
                     subheader="The information can be edited"
-                    title={`Customer: ${props.customer.id}`}
+                    title={`Create Customer`}
                 />
                 <Divider />
                 <CardContent>
@@ -202,14 +200,14 @@ export function CustomerForm(props) {
                         >
                             <TextField
                                 fullWidth
-                                label="Created"
-                                name="created"
+                                helperText="Please specify a password"
+                                label="Password"
+                                name="password"
                                 type="text"
-                                disabled
-                                value={formik.values.created}
+                                value={formik.values.password}
                                 onChange={formik.handleChange}
-                                error={formik.touched.created && Boolean(formik.errors.created)}
-                                helperText={formik.touched.created && formik.errors.created}
+                                error={formik.touched.password && Boolean(formik.errors.password)}
+                                helperText={formik.touched.password && formik.errors.password}
                             />
                         </Grid>
                     </Grid>

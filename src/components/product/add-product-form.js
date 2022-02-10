@@ -160,8 +160,7 @@ export function ProductForm({props}) {
     useEffect(() => {
         // POST request using fetch with error handling
         if(loading && movie !== null && cast.length > 0 && genres.length > 0) {
-            console.log(JSON.stringify(formatData(movie)));
-            const url = 'http://localhost:8080/movie/' + movie.id;
+            const url = process.env.NEXT_PUBLIC_API_URL + '/movie/' + movie.id;
             const requestOptions = {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + localStorage.getItem('token') },

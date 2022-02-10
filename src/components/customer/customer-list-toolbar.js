@@ -103,6 +103,7 @@ export default function CustomerListToolbar(props) {
                     <Button
                         color="primary"
                         variant="contained"
+                        href="/customer/add"
                     >
                         Add Customer
                     </Button>

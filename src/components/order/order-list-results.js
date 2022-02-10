@@ -182,13 +182,13 @@ export const OrderListResults = (props) => {
                         src={'/static/images/avatars/no_avatar.svg'}
                         sx={{ mr: 2 , border: '1px solid black' }}
                       >
-                        {getInitials(order.shipping.firstName + ' ' + order.shipping.lastName)}
+                        {getInitials(order.shipping.firstname + ' ' + order.shipping.lastname)}
                       </Avatar>
                       <Typography
                         color="textPrimary"
                         variant="body1"
                       >
-                        {order.shipping.firstName + ' ' + order.shipping.lastName}
+                        {order.shipping.firstname + ' ' + order.shipping.lastname}
                       </Typography>
                     </Box>
                   </TableCell>

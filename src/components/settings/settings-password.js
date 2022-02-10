@@ -28,7 +28,7 @@ export const SettingsPassword = (props) => {
   useEffect(() => {
     // POST request using fetch with error handling
     if(loading) {
-      const url = 'http://localhost:8080/customer/password' + props.customer.id;
+      const url = process.env.NEXT_PUBLIC_API_URL + '/customer/password' + props.customer.id;
       const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + localStorage.getItem('token') },

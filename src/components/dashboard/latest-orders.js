@@ -79,7 +79,7 @@ export function LatestOrders({...props}) {
                         {`FLX${order.id}`}
                       </TableCell>
                       <TableCell>
-                        {`${order.shipping.lastName}, ${order.shipping.firstName}`}
+                        {`${order.shipping.lastname}, ${order.shipping.firstname}`}
                       </TableCell>
                       <TableCell>
                         {format(order.saleDate, 'dd/MM/yyyy')}

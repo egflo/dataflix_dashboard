@@ -101,6 +101,7 @@ export default function ReviewListToolbar(props) {
                     <Button
                         color="primary"
                         variant="contained"
+                        disabled
                     >
                         Add Review
                     </Button>

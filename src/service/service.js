@@ -5,10 +5,12 @@ import { useRouter } from 'next/router'
 
 //+ localStorage.getItem("token")
 //const baseUrl = "https://dataflixapi.azurewebsites.net"
-const baseUrl = process.env.ENV_VARIABLE === "production" ? "https://dataflixapi.azurewebsites.net" : "http://localhost:8080"
+//const baseUrl = process.env.ENV_VARIABLE === "production" ? "https://dataflixapi.azurewebsites.net" : "http://localhost:8080"
+
+
 const fetcher = (url) =>
     axios
-        .get(baseUrl + url, { headers: { Authorization: "Bearer " + localStorage.getItem("token")} })
+        .get(process.env.NEXT_PUBLIC_API_URL + url, { headers: { Authorization: "Bearer " + localStorage.getItem("token")} })
         .then((res) => res.data)
         .catch((error) => {
 

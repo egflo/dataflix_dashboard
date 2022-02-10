@@ -29,14 +29,13 @@ import {useGetUser} from '../../service/service';
 
 
 export const AccountProfileDetails = (props) => {
-  
-  const {id, firstName, lastName, email, createdDate} = props.user;
 
+  console.log(props);
 
   const [values, setValues] = useState({
-    firstName: firstName,
-    lastName: lastName,
-    email: email,
+    firstname: props.user.firstname,
+    lastname: props.user.lastname,
+    email: props.user.email,
     state: 'California',
     country: 'USA'
   });
@@ -74,10 +73,10 @@ export const AccountProfileDetails = (props) => {
                 fullWidth
                 helperText="Please specify the first name"
                 label="First name"
-                name="firstName"
+                name="firstname"
                 onChange={handleChange}
                 required
-                value={values.firstName}
+                value={values.firstname}
                 variant="outlined"
               />
             </Grid>
@@ -89,10 +88,10 @@ export const AccountProfileDetails = (props) => {
               <TextField
                 fullWidth
                 label="Last name"
-                name="lastName"
+                name="lastname"
                 onChange={handleChange}
                 required
-                value={values.lastName}
+                value={values.lastname}
                 variant="outlined"
               />
             </Grid>

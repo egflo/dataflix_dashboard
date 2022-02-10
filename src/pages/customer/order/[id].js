@@ -125,6 +125,13 @@ function Order() {
     );
 }
 
+// this function only runs on the server by Next.js
+export const getServerSideProps = async ({params}) => {
+    const id = params.id;
+    return {
+        props: { id }
+    }
+}
 
 Order.getLayout = (page) => (
     <DashboardLayout>

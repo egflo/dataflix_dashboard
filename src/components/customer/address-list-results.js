@@ -121,13 +121,13 @@ export const AddressListResults = ({...rest }) => {
                                         {item.id}
                                     </TableCell>
                                     <TableCell>
-                                        {item.firstName + ' ' + item.lastName}
+                                        {item.firstname + ' ' + item.lastname}
                                     </TableCell>
                                     <TableCell>
                                         {item.unit}
                                     </TableCell>
                                     <TableCell>
-                                        {item.address}
+                                        {item.street}
                                     </TableCell>
                                     <TableCell>
                                         {item.city}

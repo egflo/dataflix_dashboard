@@ -8,7 +8,7 @@ import {AddressForm} from "../../../components/customer/address-form";
 
 
 
-function Customer() {
+function Customer(props) {
     const router = useRouter();
     const { id } = router.query;
 
@@ -42,7 +42,7 @@ function Customer() {
             >
                 <Container maxWidth={false}>
                     <Box sx={{ pt: 3}}>
-                        <AddressForm address={data}/>
+                        <AddressForm address={data} alert={props.alert} setalert={props.setalert}/>
                     </Box>
                 </Container>
             </Box>
@@ -50,6 +50,13 @@ function Customer() {
     );
 }
 
+// this function only runs on the server by Next.js
+export const getServerSideProps = async ({params}) => {
+    const id = params.id;
+    return {
+        props: { id }
+    }
+}
 
 Customer.getLayout = (page) => (
     <DashboardLayout>

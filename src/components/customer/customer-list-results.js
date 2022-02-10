@@ -62,8 +62,12 @@ export const CustomerListResults = (props) => {
 
   function formatAddress(customer) {
     if(customer.addresses.length > 0) {
-
       const address = customer.addresses.find(address => address.id === customer.primaryAddressId);
+      if(address === undefined) {
+        address = customer.addresses[0];
+        return `${address.city}, ${address.state}, ${address.postcode}`;
+      }
+
       return `${address.city}, ${address.state}, ${address.postcode}`;
     }
     else {
@@ -179,7 +183,7 @@ export const CustomerListResults = (props) => {
                         color="textPrimary"
                         variant="body1"
                       >
-                        {customer.firstName + ' ' + customer.lastName}
+                        {customer.firstname + ' ' + customer.lastname}
                       </Typography>
                     </Box>
                   </TableCell>

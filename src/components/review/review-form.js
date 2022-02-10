@@ -111,7 +111,7 @@ export function ReviewForm(props) {
 
         if(loading) {
             // POST request using fetch with error handling
-            const url = 'http://localhost:8080/review/' + review.id;
+            const url = process.env.NEXT_PUBLIC_API_URL + '/review/' + review.id;
 
             const requestOptions = {
                 method: 'POST',

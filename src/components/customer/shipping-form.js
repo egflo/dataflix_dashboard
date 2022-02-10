@@ -35,9 +35,9 @@ const validationSchema = yup.object().shape({
     lastName: yup.string()
         .required("Last name is required"),
     unit: yup.string(),
-    address: yup.string()
+    street: yup.string()
         .min(5, "Too Short!")
-        .required("Address is required"),
+        .required("Street is required"),
     city: yup.string()
         .min(2, "Too Short!")
         .required("City is required"),
@@ -53,10 +53,10 @@ export function ShippingForm(props) {
 
     const [loading, setLoading] = useState(false);
     const [values, setValues] = useState({
-        firstName: shipping.firstName,
-        lastName: shipping.lastName,
+        firstname: shipping.firstname,
+        lastname: shipping.lastname,
         unit: shipping.unit,
-        address: shipping.address,
+        street: shipping.street,
         city: shipping.city,
         state: shipping.state,
         postcode: shipping.postcode,
@@ -79,7 +79,7 @@ export function ShippingForm(props) {
 
         if(loading) {
             // POST request using fetch with error handling
-            const url = 'http://localhost:8080/shipping/' + shipping.id;
+            const url = process.env.NEXT_PUBLIC_API_URL + '/shipping/' + shipping.id;
 
             const requestOptions = {
                 method: 'POST',
@@ -101,10 +101,10 @@ export function ShippingForm(props) {
                     // return parsed json if response is successful
                     //alert(JSON.stringify(data, null, 2));
                     setValues({
-                        firstName: data.firstName,
-                        lastName: data.lastName,
+                        firstname: data.firstname,
+                        lastname: data.lastname,
                         unit: data.unit,
-                        address: data.address,
+                        street: data.street,
                         city: data.city,
                         state: data.state,
                         postcode: data.postcode,
@@ -132,7 +132,7 @@ export function ShippingForm(props) {
             <Card>
                 <CardHeader
                     subheader={disabled ? 'The information cannot be edited' : 'The information can be edited'}
-                    title={`Address Information`}
+                    title={`Shipping Information`}
                 />
                 <Divider />
                 <CardContent>
@@ -149,13 +149,13 @@ export function ShippingForm(props) {
                                 fullWidth
                                 helperText="Please specify the first name"
                                 label="First name"
-                                name="firstName"
+                                name="firstname"
                                 type="text"
                                 disabled={disabled}
-                                value={formik.values.firstName}
+                                value={formik.values.firstname}
                                 onChange={formik.handleChange}
-                                error={formik.touched.firstName && Boolean(formik.errors.firstName)}
-                                helperText={formik.touched.firstName && formik.errors.firstName}
+                                error={formik.touched.firstname && Boolean(formik.errors.firstname)}
+                                helperText={formik.touched.firstname && formik.errors.firstname}
                             />
                         </Grid>
                         <Grid
@@ -167,13 +167,13 @@ export function ShippingForm(props) {
                                 fullWidth
                                 helperText="Please specify the last name"
                                 label="Last name"
-                                name="lastName"
+                                name="lastname"
                                 type="text"
                                 disabled={disabled}
-                                value={formik.values.lastName}
+                                value={formik.values.lastname}
                                 onChange={formik.handleChange}
-                                error={formik.touched.lastName && Boolean(formik.errors.lastName)}
-                                helperText={formik.touched.lastName && formik.errors.lastName}
+                                error={formik.touched.lastname && Boolean(formik.errors.lastname)}
+                                helperText={formik.touched.lastname && formik.errors.lastname}
                             />
                         </Grid>
                         <Grid
@@ -202,14 +202,14 @@ export function ShippingForm(props) {
                             <TextField
                                 fullWidth
                                 helperText="Please specify the address"
-                                label="Address"
-                                name="address"
+                                label="Street address"
+                                name="street"
                                 type="text"
                                 disabled={disabled}
-                                value={formik.values.address}
+                                value={formik.values.street}
                                 onChange={formik.handleChange}
-                                error={formik.touched.address && Boolean(formik.errors.address)}
-                                helperText={formik.touched.address && formik.errors.address}
+                                error={formik.touched.street && Boolean(formik.errors.street)}
+                                helperText={formik.touched.street && formik.errors.street}
                             />
                         </Grid>
                         <Grid

@@ -38,7 +38,7 @@ function Login() {
 
   useEffect(() => {
     // POST request using fetch with error handling
-    const url = 'http://localhost:8080/user/auth'
+    const url = process.env.NEXT_PUBLIC_API_URL + '/user/auth'
 
     const requestOptions = {
       method: 'POST',
